@@ -4,11 +4,19 @@ using UnityEngine;
 
 public class CameraFollow : MonoBehaviour
 {
-   public GameObject player; //mengambil objek dalam game yang kemudian dikategorikan sebagai player
+    // Referensi ke objek dalam game yang akan diikuti oleh kamera, dikategorikan sebagai player
+    public GameObject player;
 
-    void Update() //fungsi dipanggil tiap frame
+    // Dipanggil setiap frame untuk memperbarui posisi kamera
+    void Update()
     {
-        //posisi objek dirubah menjadi posisi baru dengan vektor 3 pada x dan y yang sama dengan vektor 3 objek player serta vektor 3 pada z yang lebih rendah 10 dari vektor 3 objek player 
-        transform.position = new Vector3(player.transform.position.x, player.transform.position.y, player.transform.position.z -10);
+        // Mengatur posisi kamera agar selalu mengikuti posisi player
+        // Posisi X dan Y kamera disamakan dengan posisi X dan Y player
+        // Posisi Z kamera diatur lebih rendah 10 unit dari posisi Z player, sehingga kamera tetap berada di belakang
+        transform.position = new Vector3(
+            player.transform.position.x, 
+            player.transform.position.y, 
+            player.transform.position.z - 10
+        );
     }
 }

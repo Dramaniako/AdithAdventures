@@ -4,15 +4,19 @@ using UnityEngine;
 
 public class CollectCoin : MonoBehaviour
 {
-    public GameObject finish; //mengambil objek dalam game yang kemudian dikategorikan sebagai finish
-    private void OnCollisionEnter2D(Collision2D Collision) {
-        if (Collision.gameObject.tag == "Player") //mengecek apakah objek bersentuhan dengan objek yang diberi klasifikasi Player 
-        {
-            GameManager.point += 1; //variabel point pada script gamemanager ditambah 1
-            Destroy(gameObject); //objek dihancurkan
-        }
-        
-        
-    }
+    // Referensi ke objek dalam game yang dikategorikan sebagai finish (tidak digunakan di dalam kode ini, tetapi dapat digunakan untuk pengembangan lebih lanjut)
+    public GameObject finish;
 
+    // Dipanggil saat terjadi tabrakan dengan collider lain
+    private void OnCollisionEnter2D(Collision2D Collision) {
+        // Mengecek apakah objek yang bersentuhan memiliki tag "Player"
+        if (Collision.gameObject.tag == "Player")
+        {
+            // Menambahkan 1 poin ke variabel point dalam script GameManager
+            GameManager.point += 1;
+
+            // Menghancurkan objek coin ini setelah diambil oleh player
+            Destroy(gameObject);
+        }
+    }
 }

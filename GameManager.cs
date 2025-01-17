@@ -3,71 +3,96 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+
 public class GameManager : MonoBehaviour
 {
-    public GameObject startButton;
-    public PlayerMovement player;
-    public Text gameOverCountdown;
+    // Referensi ke objek dan elemen UI dalam game
+    public GameObject startButton;       // Tombol start
+    public PlayerMovement player;        // Pemain
+    public Text gameOverCountdown;       // Teks untuk countdown Game Over
+    public GameObject finishGoal;        // Tujuan finish game
+    public Text Point;                   // Teks untuk menampilkan poin
+    public Image healthBar;              // Gambar health bar
+    public FinishGoal finish;            // Objek FinishGoal
 
-    public GameObject finishGoal;
-
-    public Text Point;
-    public Image healthBar;
-
+    // Variabel untuk menyimpan poin
     public static int point = 0;
 
+    // Timer untuk countdown saat game over
     public float countTimer = 3;
-    // Start is called before the first frame update
+
+    // Dipanggil saat game dimulai
     void Start()
     {
+        // Menonaktifkan game over countdown pada awal permainan
         gameOverCountdown.gameObject.SetActive(false);
-        Time.timeScale = 1;
-        healthBar.gameObject.SetActive(false);
-        Destroy(finishGoal);
+        Time.timeScale = 1; // Mengatur waktu berjalan normal
+        healthBar.gameObject.SetActive(false); // Menonaktifkan health bar
+        Destroy(finishGoal); // Menghancurkan objek finish goal
     }
+
+    // Dipanggil setiap frame
     private void Update()
     {
+        // Jika pemain mati
         if( player.isDead )
         {
+            // Menampilkan countdown Game Over
             gameOverCountdown.gameObject.SetActive(true);
-            countTimer -= Time.unscaledDeltaTime;
-            Stop();
+            countTimer -= Time.unscaledDeltaTime; // Mengurangi timer
+            Stop(); // Menghentikan waktu
         }
+
+        // Menampilkan countdown Game Over
         gameOverCountdown.text = "Restarting " + (countTimer).ToString("0");
+
+        // Jika countdown selesai, restart game
         if(countTimer < 0)
         {
             RestartGame();
         }
+
+        // Menampilkan health bar jika waktu masih berjalan
         if (Time.timeScale != 0)
         {
             healthBar.gameObject.SetActive(true);
         }
-        Point.text = "Point : " + point; 
+
+        // Menampilkan jumlah poin yang telah dicapai
+        Point.text = "Point : " + point + " / " + finish.goals;
     }
+
+    // Fungsi untuk memulai game
     public void StartGame()
     {
-        startButton.SetActive(false);
-        SceneManager.UnloadSceneAsync("StartMenu");
-        SceneManager.LoadScene("Level1", LoadSceneMode.Single);
+        startButton.SetActive(false); // Menonaktifkan tombol start
+        SceneManager.UnloadSceneAsync("StartMenu"); // Menghancurkan scene StartMenu
+        SceneManager.LoadScene("Level1", LoadSceneMode.Single); // Memuat scene Level1
     }
-    
+
+    // Fungsi untuk menghentikan permainan
     public void GameOver()
     {
-        Time.timeScale = 0;
+        Time.timeScale = 0; // Menghentikan waktu
     }
+
+    // Fungsi untuk me-restart game
     public void RestartGame()
     {
-        SceneManager.UnloadSceneAsync("Level1");
-        SceneManager.LoadScene("Level1", LoadSceneMode.Single);
+        SceneManager.UnloadSceneAsync("Level1"); // Menghancurkan scene Level1
+        SceneManager.LoadScene("Level1", LoadSceneMode.Single); // Memuat ulang scene Level1
     }
 
+    // Fungsi untuk kembali ke menu utama setelah selesai
     public void Restart()
     {
-        SceneManager.UnloadSceneAsync("FinishMenu");
-        SceneManager.LoadScene("StartMenu", LoadSceneMode.Single);
+        SceneManager.UnloadSceneAsync("FinishMenu"); // Menghancurkan scene FinishMenu
+        SceneManager.LoadScene("StartMenu", LoadSceneMode.Single); // Memuat scene StartMenu
     }
 
-    private void Stop(){
-        Time.timeScale = 0f;
+    // Fungsi untuk menghentikan waktu (menggunakan Time.timeScale)
+    private void Stop()
+    {
+        Time.timeScale = 0f; // Menghentikan waktu
     }
 }

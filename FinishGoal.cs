@@ -2,29 +2,73 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class FinishGoal : MonoBehaviour
 {
-    public new CircleCollider2D collider; //mengambil unsur CircleCollider2D dari objek dan mengkategorikannya sebagai collider
-    public SpriteRenderer sprite; //mengambil unsur SpriteRenderer dari objek dan mengkategorikannya sebagai sprite
-    private void Start() { //pada awal game dimuat fungsi ini dijalankan
-        collider.enabled = false; //unsur collider dinonaktifkan
-        sprite.enabled = false; //unsur sprite dinonaktifkan
-    }
-    private void Update() { //fungsi ini dipanggil tiap frame
-        if (GameManager.point == 3) //mengecek apakah unsur point pada script GameManager sudah mencapai 3
-        {
-            collider.enabled = true; //unsur collider diaktifkan
-            sprite.enabled = true; //unsur sprite diaktifkan
-        }
-    }
-    private void OnCollisionEnter2D(Collision2D Collision) //fungsi dipanggil saat objek menyentuh objek lainnya
+    // Menyimpan jumlah goal yang harus dicapai
+    public int goals;
+
+    // Referensi ke Text untuk menampilkan pesan saat goal tercapai
+    public Text GoalsAchieved;
+
+    // Menyimpan status apakah goal sudah tercapai
+    public bool trigerred = false;
+
+    // Mengambil komponen CircleCollider2D dan SpriteRenderer dari objek ini
+    public new CircleCollider2D collider;
+    public SpriteRenderer sprite;
+
+    // Dipanggil saat permainan dimulai
+    private void Start() 
     {
-        if (Collision.gameObject.tag == "Player") //mengecek apakah objek yang disentuh memiliki klasifikasi Player
+        // Menonaktifkan collider, sprite, dan tampilan teks goal pada awal permainan
+        collider.enabled = false;
+        sprite.enabled = false;
+        GoalsAchieved.enabled = false;
+    }
+
+    // Dipanggil setiap frame untuk memeriksa apakah goal sudah tercapai
+    private void Update() 
+    {
+        // Mengecek apakah jumlah point yang dikumpulkan sudah mencapai jumlah goal yang ditentukan
+        if (GameManager.point == goals) 
         {
-            SceneManager.UnloadSceneAsync("Level1"); //scene bernama Level1 dinonaktifkan
-            SceneManager.LoadScene("FinishMenu", LoadSceneMode.Single); //scene bernama FinishMenu diaktifkan dengan mode single
+            // Mengaktifkan collider dan sprite, dan memulai proses pengecekan
+            collider.enabled = true;
+            sprite.enabled = true;
+            StartCoroutine(check());
         }
     }
 
+    // Dipanggil saat objek bersentuhan dengan objek lain
+    private void OnCollisionEnter2D(Collision2D Collision) 
+    {
+        // Mengecek apakah objek yang bersentuhan memiliki tag "Player"
+        if (Collision.gameObject.tag == "Player") 
+        {
+            // Menonaktifkan scene Level1 dan memuat scene FinishMenu
+            SceneManager.UnloadSceneAsync("Level1");
+            SceneManager.LoadScene("FinishMenu", LoadSceneMode.Single);
+        }
+    }
+
+    // Coroutine untuk menampilkan pesan setelah goal tercapai
+    public IEnumerator check()
+    {
+        // Mengecek jika pesan belum ditampilkan
+        if (trigerred == false)
+        {
+            // Menampilkan pesan bahwa semua coin telah didapatkan
+            GoalsAchieved.enabled = true;
+            GoalsAchieved.text = "All Coin Obtained!\n\nGolden Coin Appeared!";
+            
+            // Menunggu selama 3 detik sebelum menyembunyikan pesan
+            yield return new WaitForSecondsRealtime(3f);
+            GoalsAchieved.enabled = false;
+
+            // Menandakan bahwa pesan sudah ditampilkan
+            trigerred = true;
+        }
+    }
 }
